@@ -187,35 +187,28 @@ appended to the base. Examples:
 Holler also auto-loads `CLAUDE.md` files from your project root and sub-
 directories the same way Claude Code does — put project conventions there.
 
-## Branch-workflow slash commands (`/beam-start`, `/beam-end`, `/beam-cancel-lock`)
+## Slash commands
 
-These commands are **retired deprecation no-ops**. Holler's per-session git
-worktree now gives every session branch isolation automatically, and branches
-land with plain git. Historically, when two Holler sessions both touched a
-shared git checkout they could clobber each other's work — switch branches out
-from under each other, stash each other's WIP, lose commits to races — and
-these slash commands serialized that coordination. Worktree mode handles it now.
+Holler ships one Claude Code slash command template: `/project-bootstrap`.
+It scaffolds per-project guardrails (`CLAUDE.md`, a linter config, and a
+`BACKLOG.md` stub) for whatever repo you're working in. Idempotent — proposes
+before writing, never overwrites.
 
-Templates live at `templates/claude-commands/` in this repo. Install once
-per developer machine:
+Install it once per machine:
 
 ```powershell
 # Windows (PowerShell), from a holler clone
 $src = "templates\claude-commands"
 $dst = "$env:USERPROFILE\.claude\commands"
 New-Item -ItemType Directory -Force -Path $dst | Out-Null
-Copy-Item "$src\beam-start.md","$src\beam-end.md","$src\beam-cancel-lock.md" -Destination $dst -Force
+Copy-Item "$src\project-bootstrap.md" -Destination $dst -Force
 ```
 
 ```bash
 # macOS / Linux
 mkdir -p ~/.claude/commands
-cp templates/claude-commands/beam-*.md ~/.claude/commands/
+cp templates/claude-commands/project-bootstrap.md ~/.claude/commands/
 ```
-
-Re-run the same command after pulling updates to the templates. See
-`templates/claude-commands/README.md` for the full lock-file mechanism
-and worktree-aware merge-back flow.
 
 ## Hotkey caveats
 
