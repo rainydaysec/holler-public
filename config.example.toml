@@ -1,0 +1,112 @@
+# holler config — copy this to `config.toml` and edit, OR let holler's
+# first-run dialog populate the values on first launch.
+#
+# Every key below mirrors the built-in default in holler/config.py (_DEFAULTS);
+# any key you leave out falls back to that default. Unknown keys are ignored.
+
+# Repo cwd for the Claude Agent SDK sessions. Claude works against files in
+# this directory. Set it to YOUR project root.
+# (Windows example: "C:\\path\\to\\your\\project")
+repo_cwd = "/path/to/your/project"
+
+# Which Claude model new sessions use by default. Click the badge in the
+# Sessions window header to cycle between available models at runtime.
+claude_model = "claude-opus-5-5"
+
+# Explicit model picker list. Empty = discover available models automatically
+# (Anthropic API / Claude Code transcripts) on top of a built-in baseline.
+# Set it to pin the badge cycle to specific ids, in a specific order.
+claude_models = []
+
+# Push-to-talk key — a single key: "right alt", "left alt", "f12",
+# "right ctrl", etc. ("right alt" == Right Option on a Mac.)
+hotkey = "right alt"
+
+# Microphone for push-to-talk capture. Empty string ("") follows the OS
+# default input device. Otherwise a device-name substring that sounddevice
+# resolves, e.g. "Scarlett 4i4 4th Gen" or just "Scarlett". If the named
+# device isn't available at record time, holler falls back to the OS default.
+mic_device = ""
+
+# Global UI scale. 0.0 = auto (1.0 on Retina/HiDPI, ~1.3 on a 1x display).
+# Set a positive value (1.0, 1.25, 1.5) to pin it.
+ui_scale = 0.0
+
+# faster-whisper settings. These CPU-safe values work everywhere (~1-2s per
+# clip on Apple Silicon). With a recent NVIDIA GPU (Windows/Linux) you can use
+# whisper_model = "medium", whisper_compute = "float16", whisper_device = "cuda"
+# for ~300-500ms per clip.
+whisper_model = "small"
+whisper_compute = "int8"
+whisper_device = "cpu"
+whisper_language = "en"
+
+# Mini-panel position (legacy — Sessions window is the primary UI now).
+panel_corner = "top-right"
+panel_width = 380
+
+# Max screenshot long-edge (px). Larger images get downscaled before being sent.
+max_screenshot_long_edge = 1280
+
+# Scribble overlay color + line width.
+stroke_color = "#FF2E2E"
+stroke_width = 4
+
+# Save every composite (screenshot + scribbles) to holler's captures folder.
+debug_save_captures = true
+
+# Global hotkey to toggle the Sessions window (and bring it to the front).
+sessions_window_hotkey = "ctrl+shift+h"
+
+# Auto-archive sessions inactive for this many days. Pinned sessions are exempt.
+auto_archive_days = 30
+
+# Permanently purge a session (DB rows, captures, transcript) this many days
+# after it's marked Done. Pinned/running sessions are exempt. 0 = never purge.
+purge_reviewed_days = 3
+
+# Mini-panel max session rows.
+mini_panel_max_sessions = 12
+
+# Open the Sessions window on launch (the primary UI).
+open_sessions_on_launch = true
+
+# How many SDK turns can run in parallel (per lane: interactive / background).
+concurrency_cap = 8
+
+# Give every session its own git worktree + branch so parallel sessions can't
+# clobber each other's work.
+per_session_worktrees = true
+
+# Superintendent lane: operator-seeded evidence inbox that spawns autonomous
+# fix-to-deploy worker sessions. Its workers are authorized to land/push.
+superintendent_enabled = true
+
+# Max concurrent Superintendent workers (also capped by concurrency_cap).
+# Read live from this file — edits apply within ~5s.
+superintendent_max_workers = 10
+
+# Model for Superintendent workers. Empty = inherit claude_model.
+superintendent_model = ""
+
+# How a Superintendent worker ships a verified fix.
+#   "land"          — the deploy gate always lands onto the repo's default
+#                     branch, because that is the only thing that runs a
+#                     production deploy. On a merge-request repo (GitLab) it
+#                     opens the MR first, for the record, then lands it.
+#   "merge_request" — close the gate: on a merge-request repo the worker may
+#                     only open an MR and `deploy_gate` refuses to land or push.
+superintendent_ship_policy = "land"
+
+# Named project repos a session can target instead of repo_cwd. A session
+# pinned to a project gets its worktree under
+# <project>/.claude/worktrees/holler-<id>-<slug>/, forked from that repo's
+# default branch (origin/HEAD, else main/master). Empty = every session uses
+# repo_cwd. Example:
+#   projects = { canvas = "/Users/me/Scripts/canvas" }
+projects = {}
+
+# Default project per profile. A Superintendent evidence item's own `project`
+# overrides its profile's. Names must exist in `projects`. Example:
+#   profile_projects = { superintendent = "canvas", investigation = "canvas" }
+profile_projects = {}

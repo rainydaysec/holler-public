@@ -1,0 +1,11 @@
+#!/bin/sh
+# Promote the new tip of main into ~/holler-stable once its tests pass
+# (scripts/promote.py). Backgrounded and detached so committing stays instant;
+# progress shows in Holler's header. Installed by scripts/install_git_hooks.sh.
+[ "$(git rev-parse --abbrev-ref HEAD 2>/dev/null)" = "main" ] || exit 0
+root="$(git rev-parse --show-toplevel)" || exit 0
+[ -x "$root/.venv/bin/python" ] && [ -f "$root/scripts/promote.py" ] || exit 0
+env -u GIT_DIR -u GIT_INDEX_FILE -u GIT_WORK_TREE -u GIT_PREFIX \
+    nohup "$root/.venv/bin/python" "$root/scripts/promote.py" --background \
+    >/dev/null 2>&1 </dev/null &
+exit 0

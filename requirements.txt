@@ -1,0 +1,28 @@
+claude-agent-sdk>=0.1.80
+faster-whisper>=1.2.1
+# Markdown + code rendering in the detail window
+pygments>=2.18
+markdown-it-py>=3.0
+# Round-trip TOML writes for the settings dialog
+tomli-w>=1.0
+# CUDA runtime DLLs for CTranslate2 / faster-whisper GPU execution (Windows + NVIDIA only).
+# CTranslate2 4.x stopped bundling these — they're shipped as separate pip packages now.
+# macOS / Linux run faster-whisper CPU-only (CTranslate2 has no Metal/ROCm backend).
+nvidia-cublas-cu12; sys_platform == "win32"
+nvidia-cudnn-cu12; sys_platform == "win32"
+sounddevice>=0.5.0
+numpy>=1.26
+mss>=10.0
+# Active-window capture + foreground tracking is platform-specific:
+#   Windows -> pywin32 (Win32 / DWM)        macOS -> pyobjc (Quartz / Cocoa)
+pywin32>=308; sys_platform == "win32"
+pyobjc-framework-Quartz>=10.0; sys_platform == "darwin"
+pyobjc-framework-Cocoa>=10.0; sys_platform == "darwin"
+# Push-to-talk hotkey backend:
+#   Windows -> keyboard (low-level WH_KEYBOARD_LL hook)
+#   macOS / Linux -> pynput (Quartz event tap; needs Accessibility permission)
+keyboard>=0.13.5; sys_platform == "win32"
+pynput>=1.7.6; sys_platform != "win32"
+Pillow>=11.0
+PySide6>=6.8
+tomli>=2.0;python_version<"3.11"

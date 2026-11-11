@@ -1,0 +1,23 @@
+.venv/
+.DS_Store
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+captures/
+last.png
+install.log
+*.db
+*.db-wal
+*.db-shm
+*.egg-info/
+build/
+dist/
+
+# Local config — first-run dialog populates this on a fresh clone.
+# A `config.example.toml` is committed instead.
+config.toml
+
+# Claude Code: live per-session worktrees and machine-local settings.
+.claude/worktrees/
+.claude/settings.local.json

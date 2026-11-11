@@ -1,0 +1,231 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>holler — brand preview</title>
+<style>
+  :root {
+    --bg: #0e1216;
+    --bg-row: #161c22;
+    --header-bg: #0c1117;
+    --header-border: #1d242b;
+    --fg: #e6edf3;
+    --fg-dim: #8b949e;
+    --accent: #58a6ff;
+    --green: #3fb950;
+    --green-dim: #2a6b32;
+    --amber: #F5A524;
+    --amber-soft: #7a4f0e;
+    --amber-glow: rgba(245,165,36,0.13);
+  }
+  body {
+    background: #1a1d22; color: var(--fg);
+    font-family: 'Segoe UI', Inter, system-ui, sans-serif;
+    margin: 0; padding: 24px;
+  }
+  h2 { font-weight: 500; font-size: 11pt; color: var(--fg-dim);
+       margin: 28px 0 8px; letter-spacing: .04em; text-transform: uppercase; }
+  .frame { width: 1080px; background: var(--bg); border-radius: 6px;
+           overflow: hidden; box-shadow: 0 8px 32px #0008;
+           border: 1px solid #222; }
+  .titlebar { height: 30px; background: #0a0d11; display: flex;
+              align-items: center; padding: 0 12px; gap: 8px;
+              border-bottom: 1px solid #1a1f25;
+              font-size: 9pt; color: var(--fg-dim); }
+  .titlebar .dot { width: 8px; height: 8px; border-radius: 50%; background: #2a3038; }
+
+  /* ── HEADER (NEW BRAND) ───────────────────────────────────────────── */
+  .header {
+    height: 52px; background: var(--header-bg);
+    border-bottom: 1px solid var(--header-border);
+    display: flex; align-items: center; gap: 12px;
+    padding: 0 14px;
+    position: relative;
+  }
+  .wordmark {
+    display: flex; align-items: flex-end; gap: 9px;
+    height: 34px;
+  }
+  .glyph { display: flex; align-items: flex-end; gap: 3px; height: 22px; }
+  /* Acoustic rounded top — bottom stays square so the bar still sits on
+     the wordmark baseline cleanly. */
+  .glyph .bar { width: 4px; border-radius: 1.5px 1.5px 0 0; }
+  .glyph .b1 { height: 6px;  background: #b87a25; }
+  .glyph .b2 { height: 11px; background: #d49019; }
+  .glyph .b3 { height: 16px; background: var(--amber); }
+  .word {
+    font-weight: 900; font-size: 13pt; color: var(--amber);
+    letter-spacing: .12em;
+    position: relative; padding-bottom: 6px;
+    line-height: 1;
+  }
+  .word::after {
+    content: ""; position: absolute; left: 0; right: 4px; bottom: 0;
+    height: 2px; background: var(--amber); opacity: .85;
+  }
+  .vsep { width: 1px; height: 22px; background: var(--header-border); }
+  /* Cluster divider — shorter (14px vs 22px) and same border color so it
+     separates chip groups without competing with the wordmark divider. */
+  .csep { width: 1px; height: 14px; background: var(--header-border); }
+  .chip { display: inline-flex; align-items: center; gap: 6px;
+          font-size: 9pt; color: var(--fg-dim); }
+  .chip .pip { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
+  .pip.green { background: var(--green); }
+  .pip.greendim { background: var(--green-dim); }
+  .pip.amber { background: var(--amber); }
+  .stretch { flex: 1; }
+  /* Continuation pill — outline only, so the only FILLED pill on the right
+     is the amber brand pill. Keeps state separate from brand. */
+  .continuation-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 9pt; font-weight: 600; color: var(--accent);
+    background: transparent;
+    border: 1px solid rgba(88,166,255,0.45);
+    border-radius: 10px; padding: 2px 10px;
+    cursor: pointer;
+  }
+  .model-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 9pt; font-weight: 700; color: var(--amber);
+    background: var(--amber-glow);
+    border: 1px solid var(--amber-soft);
+    border-radius: 10px; padding: 3px 11px;
+    /* Tracked uppercase echoes the HOLLER wordmark voice. */
+    text-transform: uppercase; letter-spacing: .12em;
+    cursor: pointer;
+  }
+  .menu-btn { color: var(--fg-dim); font-size: 14pt; padding: 0 8px; cursor: pointer; }
+  .menu-btn:hover { color: var(--fg); }
+
+  /* ── Body mock (for context only) ─────────────────────────────────── */
+  .body { display: flex; min-height: 280px; }
+  .rail { width: 270px; background: var(--bg);
+          border-right: 1px solid #1a1f25; padding: 12px;
+          font-size: 9pt; color: var(--fg-dim); }
+  .rail .new { width: 100%; padding: 10px; background: #1f6feb22;
+               color: var(--fg); border: 1px solid var(--accent);
+               border-radius: 4px; text-align: center;
+               font-weight: 600; font-size: 10pt; margin-bottom: 12px; cursor: pointer; }
+  .rail .row { padding: 10px 8px; margin: 2px 0; border-radius: 4px;
+               color: var(--fg); }
+  .rail .row.sel { background: #1f6feb22; }
+  .rail .row .meta { color: var(--fg-dim); font-size: 8pt; margin-top: 3px; }
+  .detail { flex: 1; padding: 18px; }
+  .detail h1 { font-size: 14pt; margin: 0 0 6px; color: var(--fg); }
+  .detail p { color: var(--fg-dim); font-size: 10pt; margin: 0; }
+
+  /* ── BEFORE comparison ────────────────────────────────────────────── */
+  .header-old {
+    height: 40px; background: #11161c;
+    border-bottom: 1px solid #1a1f25;
+    display: flex; align-items: center; gap: 10px;
+    padding: 0 12px 0 12px;
+  }
+  .header-old .word-old { color: var(--fg); font-weight: 600; font-size: 11pt; }
+  .header-old .meta-old { color: var(--fg-dim); font-size: 9pt; }
+  .header-old .model-old { color: var(--fg-dim); font-size: 9pt; padding: 0 8px; }
+  .continuation-pill-old {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 9pt; font-weight: 600; color: var(--accent);
+    background: rgba(88,166,255,0.10);
+    border: 1px solid var(--accent);
+    border-radius: 10px; padding: 2px 10px;
+  }
+  .model-pill-old {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 9pt; font-weight: 600; color: var(--amber);
+    background: var(--amber-glow);
+    border: 1px solid var(--amber-soft);
+    border-radius: 10px; padding: 3px 10px;
+  }
+</style></head>
+<body>
+
+<h2>BEFORE — branded header v1 (single chip wall, filled blue continuation pill competing with amber model pill, mixed-case opus)</h2>
+<div class="frame">
+  <div class="titlebar"><div class="dot"></div>holler · sessions</div>
+  <div class="header">
+    <div class="wordmark">
+      <div class="glyph" style="--bar-radius: 1px 1px 0 0;">
+        <div class="bar b1" style="border-radius: 1px;"></div>
+        <div class="bar b2" style="border-radius: 1px;"></div>
+        <div class="bar b3" style="border-radius: 1px;"></div>
+      </div>
+      <div class="word">HOLLER</div>
+    </div>
+    <div class="vsep"></div>
+    <div class="chip"><span class="pip green"></span> ready · 3 running · 978 tokens · 89% cached · $0.247 · 7d 60% · resets 3d 17h</div>
+    <div class="stretch"></div>
+    <div class="continuation-pill-old">→ Deep dive Holler app visual…</div>
+    <div class="model-pill-old">opus 4.8</div>
+    <div class="menu-btn">⋯</div>
+  </div>
+</div>
+
+<h2>AFTER — branded header (52px, wordmark + amber signature stripe + clustered chips + ghost continuation pill + tracked-uppercase model pill)</h2>
+<div class="frame">
+  <div class="titlebar"><div class="dot"></div>holler · sessions</div>
+  <div class="header">
+    <div class="wordmark">
+      <div class="glyph"><div class="bar b1"></div><div class="bar b2"></div><div class="bar b3"></div></div>
+      <div class="word">HOLLER</div>
+    </div>
+    <div class="vsep"></div>
+    <div class="chip"><span class="pip green"></span> ready · 3 running</div>
+    <div class="csep"></div>
+    <div class="chip"><span class="pip greendim"></span> 978 tokens · 89% cached · $0.247</div>
+    <div class="csep"></div>
+    <div class="chip"><span class="pip amber"></span> 7d 60% · resets 3d 17h</div>
+    <div class="stretch"></div>
+    <div class="continuation-pill">→ Deep dive Holler app visual…</div>
+    <div class="model-pill">opus 4.8</div>
+    <div class="menu-btn">⋯</div>
+  </div>
+  <div class="body">
+    <div class="rail">
+      <div class="new">+ New · UI / UX</div>
+      <div class="row sel">Implement platform connection setup<div class="meta">opus 4.8 · just now · 21.3k tokens</div></div>
+      <div class="row">Fix Canvas tour wizard restart loop<div class="meta">opus 4.8 · just now · 47.6k tokens</div></div>
+      <div class="row">Change walkthrough text to say Canvas AI<div class="meta">opus 4.8 · just now · 4.6k tokens</div></div>
+    </div>
+    <div class="detail">
+      <h1>Ready — hold your talk hotkey to start, or pick a session</h1>
+      <p>Quick switcher: Ctrl+K · New session: Ctrl+N · Focus search: Ctrl+F</p>
+    </div>
+  </div>
+</div>
+
+<h2>WORDMARK — close-up</h2>
+<div style="background: var(--header-bg); padding: 28px; border-radius: 6px; display: inline-block;">
+  <div class="wordmark" style="transform: scale(2.2); transform-origin: left center;">
+    <div class="glyph"><div class="bar b1"></div><div class="bar b2"></div><div class="bar b3"></div></div>
+    <div class="word">HOLLER</div>
+  </div>
+</div>
+
+<h2>BRAND SYSTEM</h2>
+<div style="display: flex; gap: 16px; flex-wrap: wrap;">
+  <div style="background: var(--header-bg); padding: 16px 20px; border-radius: 6px; min-width: 200px;">
+    <div style="font-size: 9pt; color: var(--fg-dim); margin-bottom: 6px;">PRIMARY</div>
+    <div style="display:flex; gap: 8px; align-items: center;">
+      <div style="width:32px;height:32px;background:var(--amber);border-radius:4px;"></div>
+      <div><div style="font-weight:600">Holler Amber</div>
+           <div style="color:var(--fg-dim);font-size:9pt;font-family:monospace">#F5A524</div></div>
+    </div>
+  </div>
+  <div style="background: var(--header-bg); padding: 16px 20px; border-radius: 6px; min-width: 200px;">
+    <div style="font-size: 9pt; color: var(--fg-dim); margin-bottom: 6px;">TINTS</div>
+    <div style="display:flex; gap: 8px; align-items: center;">
+      <div style="width:32px;height:32px;background:var(--amber-soft);border-radius:4px;"></div>
+      <div><div style="font-weight:600">Amber Soft</div>
+           <div style="color:var(--fg-dim);font-size:9pt;font-family:monospace">#7a4f0e</div></div>
+    </div>
+  </div>
+  <div style="background: var(--header-bg); padding: 16px 20px; border-radius: 6px; min-width: 200px;">
+    <div style="font-size: 9pt; color: var(--fg-dim); margin-bottom: 6px;">SURFACE</div>
+    <div style="display:flex; gap: 8px; align-items: center;">
+      <div style="width:32px;height:32px;background:var(--header-bg);border-radius:4px;border:1px solid #222;"></div>
+      <div><div style="font-weight:600">Header BG</div>
+           <div style="color:var(--fg-dim);font-size:9pt;font-family:monospace">#0c1117</div></div>
+    </div>
+  </div>
+</div>
+
+</body></html>
